@@ -1,0 +1,137 @@
+:root {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+html {
+  font-size: clamp(14px, 2.8vw, 16px);
+}
+
+.mobile-only {
+  display: none;
+}
+
+.mobile-hidden {
+  display: initial;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+    line-height: 1.2;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.95em;
+  }
+
+  .ant-layout-header {
+    padding: 0 12px !important;
+    min-height: 48px;
+  }
+
+  .ant-card-body {
+    padding: 16px !important;
+  }
+
+  .ant-breadcrumb {
+    font-size: 0.95em;
+  }
+
+  .mobile-only {
+    display: initial;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
+@media (max-width: 430px) {
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .ant-space {
+    gap: 8px !important;
+  }
+
+  .ant-list-grid .ant-list-item {
+    padding: 8px !important;
+  }
+
+  .ant-select {
+    min-width: 120px;
+  }
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus,
+.recharts-layer:focus,
+.recharts-sector:focus,
+.recharts-curve:focus,
+.recharts-rectangle:focus,
+.recharts-dot:focus,
+.recharts-active-dot:focus,
+.recharts-tooltip-cursor:focus,
+.recharts-wrapper *:focus {
+  outline: none !important;
+}

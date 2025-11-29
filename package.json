@@ -1,0 +1,10 @@
+{
+  "name": "ai-library",
+  "scripts": {
+    "format": "npx prettier --write \"**/*.{js,ts,jsx,tsx,json,md,yml,yaml,css,html}\"",
+    "check": "npx prettier --check \"**/*.{js,ts,jsx,tsx,json,md,yml,yaml,css,html}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}

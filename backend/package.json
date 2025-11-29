@@ -1,0 +1,39 @@
+{
+  "name": "ai-library-backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "format": "prettier --write .",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop ai-library-backend",
+    "pm2:restart": "pm2 restart ai-library-backend",
+    "pm2:logs": "pm2 logs ai-library-backend"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^6.7.0",
+    "express-session": "^1.18.2",
+    "fast-csv": "^5.0.5",
+    "helmet": "^7.0.0",
+    "multer": "^2.0.2",
+    "ollama": "^0.6.0",
+    "pg": "^8.16.3",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

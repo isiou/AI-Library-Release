@@ -1,0 +1,1367 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AI-Library-Backend-API",
+    "description": "Backend API Document"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "AI-Admin"
+    },
+    {
+      "name": "AI-Assistant"
+    },
+    {
+      "name": "Announcements"
+    },
+    {
+      "name": "Books"
+    },
+    {
+      "name": "Borrows"
+    },
+    {
+      "name": "Recommendations"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "用户注册",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "readerId": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "nickname": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "enrollYear": {
+                    "type": "integer"
+                  },
+                  "readerType": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "readerId": "auth_test",
+                  "password": "password123",
+                  "nickname": "Test User",
+                  "gender": "M",
+                  "enrollYear": 2023,
+                  "readerType": "管理员",
+                  "department": "IT"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "注册成功"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "用户登录",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "readerId": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["readerId", "password"],
+                "example": {
+                  "readerId": "ROOT",
+                  "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功"
+          }
+        }
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "获取当前会话",
+        "responses": {
+          "200": {
+            "description": "当前用户信息"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "用户登出",
+        "responses": {
+          "200": {
+            "description": "登出成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/models": {
+      "get": {
+        "tags": ["AI-Admin"],
+        "summary": "获取模型列表",
+        "responses": {
+          "200": {
+            "description": "模型列表"
+          }
+        }
+      },
+      "post": {
+        "tags": ["AI-Admin"],
+        "summary": "添加新模型",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model_name": {
+                    "type": "string"
+                  },
+                  "model_type": {
+                    "type": "string"
+                  },
+                  "endpoint_url": {
+                    "type": "string"
+                  },
+                  "max_tokens": {
+                    "type": "integer"
+                  },
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "model_config": {
+                    "type": "object"
+                  }
+                },
+                "example": {
+                  "model_name": "deepseek-r1:1.5b",
+                  "model_type": "ollama",
+                  "endpoint_url": "http://localhost:11434",
+                  "max_tokens": 4096,
+                  "temperature": 0.7,
+                  "model_config": {
+                    "top_p": 0.9,
+                    "repeat_penalty": 1.1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/models/{id}": {
+      "patch": {
+        "tags": ["AI-Admin"],
+        "summary": "更新模型配置",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  },
+                  "max_tokens": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "temperature": 0.8,
+                  "is_active": true,
+                  "max_tokens": 8192
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["AI-Admin"],
+        "summary": "删除模型配置",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/models/{id}/test": {
+      "post": {
+        "tags": ["AI-Admin"],
+        "summary": "测试模型响应",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "test_message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "test_message": "你好"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "测试成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/ollama/health": {
+      "get": {
+        "tags": ["AI-Admin"],
+        "summary": "Ollama 服务健康检查",
+        "responses": {
+          "200": {
+            "description": "服务正常"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/ollama/models": {
+      "get": {
+        "tags": ["AI-Admin"],
+        "summary": "获取 Ollama 服务端模型",
+        "responses": {
+          "200": {
+            "description": "模型列表"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/ollama/sync": {
+      "post": {
+        "tags": ["AI-Admin"],
+        "summary": "同步 Ollama 模型到数据库",
+        "responses": {
+          "200": {
+            "description": "同步成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/ollama/pull": {
+      "post": {
+        "tags": ["AI-Admin"],
+        "summary": "拉取 Ollama 模型",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model_name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "model_name": "tinyllama"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "拉取开始"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/ollama/models/{name}": {
+      "delete": {
+        "tags": ["AI-Admin"],
+        "summary": "删除 Ollama 服务端模型",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/ai-admin/stats": {
+      "get": {
+        "tags": ["AI-Admin"],
+        "summary": "获取 AI 使用统计",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "统计数据"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/models": {
+      "get": {
+        "tags": ["AI-Assistant"],
+        "summary": "获取可用模型列表",
+        "responses": {
+          "200": {
+            "description": "模型列表"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/sessions": {
+      "get": {
+        "tags": ["AI-Assistant"],
+        "summary": "获取会话列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "会话列表"
+          }
+        }
+      },
+      "post": {
+        "tags": ["AI-Assistant"],
+        "summary": "创建新的聊天会话",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "title": "AI Service Test Session"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/sessions/{id}": {
+      "patch": {
+        "tags": ["AI-Assistant"],
+        "summary": "更新会话标题",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "title": "Updated Session Title"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["AI-Assistant"],
+        "summary": "删除会话",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/sessions/{id}/messages": {
+      "get": {
+        "tags": ["AI-Assistant"],
+        "summary": "获取消息历史",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "消息列表"
+          }
+        }
+      },
+      "post": {
+        "tags": ["AI-Assistant"],
+        "summary": "发送消息",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "stream": {
+                    "type": "boolean"
+                  }
+                },
+                "example": {
+                  "content": "你好",
+                  "stream": false
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "发送成功"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/sessions/{id}/system-messages": {
+      "post": {
+        "tags": ["AI-Assistant"],
+        "summary": "保存系统消息",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "type": "object"
+                  }
+                },
+                "example": {
+                  "role": "system",
+                  "content": "你是一个乐于助人的图书馆助手",
+                  "metadata": {
+                    "intent": "role_setting"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "保存成功"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/sessions/{id}/messages/stream": {
+      "get": {
+        "tags": ["AI-Assistant"],
+        "summary": "流式请求消息",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "流式响应"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/messages/{id}/feedback": {
+      "post": {
+        "tags": ["AI-Assistant"],
+        "summary": "提交消息反馈",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "feedback_type": {
+                    "type": "string"
+                  },
+                  "feedback_reason": {
+                    "type": "string"
+                  },
+                  "feedback_comment": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "feedback_type": "like",
+                  "feedback_reason": "helpful",
+                  "feedback_comment": "回答准确"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "提交成功"
+          }
+        }
+      }
+    },
+    "/api/ai-assistant/stats": {
+      "get": {
+        "tags": ["AI-Assistant"],
+        "summary": "获取用户使用统计",
+        "responses": {
+          "200": {
+            "description": "统计数据"
+          }
+        }
+      }
+    },
+    "/api/announcements/active": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "获取活动公告",
+        "responses": {
+          "200": {
+            "description": "公告列表"
+          }
+        }
+      }
+    },
+    "/api/announcements": {
+      "get": {
+        "tags": ["Announcements"],
+        "summary": "获取所有公告",
+        "responses": {
+          "200": {
+            "description": "公告列表"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Announcements"],
+        "summary": "创建公告",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                },
+                "example": {
+                  "title": "维护结束",
+                  "content": "维护已结束",
+                  "type": "info",
+                  "is_active": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功"
+          }
+        }
+      }
+    },
+    "/api/announcements/{id}": {
+      "put": {
+        "tags": ["Announcements"],
+        "summary": "更新公告",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                },
+                "example": {
+                  "title": "系统维护通知",
+                  "content": "系统将于本周日进行维护",
+                  "type": "info",
+                  "is_active": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Announcements"],
+        "summary": "删除公告",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/books/search": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "搜索书籍",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "搜索结果"
+          }
+        }
+      }
+    },
+    "/api/books/popular/list": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取热门书籍",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "热门书籍列表"
+          }
+        }
+      }
+    },
+    "/api/books/categories/stats": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取分类统计",
+        "responses": {
+          "200": {
+            "description": "统计数据"
+          }
+        }
+      }
+    },
+    "/api/books/categories": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取所有分类",
+        "responses": {
+          "200": {
+            "description": "分类列表"
+          }
+        }
+      }
+    },
+    "/api/books/languages": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取所有语言",
+        "responses": {
+          "200": {
+            "description": "语言列表"
+          }
+        }
+      }
+    },
+    "/api/books/authors": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取作者列表",
+        "responses": {
+          "200": {
+            "description": "作者列表"
+          }
+        }
+      }
+    },
+    "/api/books": {
+      "post": {
+        "tags": ["Books"],
+        "summary": "创建书籍",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book_id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "publisher": {
+                    "type": "string"
+                  },
+                  "publication_year": {
+                    "type": "integer"
+                  },
+                  "call_no": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "doc_type": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "book_id": "TEST_BOOK_001",
+                  "title": "Test Book",
+                  "author": "Test Author",
+                  "publisher": "Test Publisher",
+                  "publication_year": 2023,
+                  "call_no": "TP312/TEST",
+                  "language": "English",
+                  "doc_type": "Computer Science"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功"
+          }
+        }
+      }
+    },
+    "/api/books/{id}": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取书籍详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "书籍详情"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Books"],
+        "summary": "更新书籍",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "publisher": {
+                    "type": "string"
+                  },
+                  "publication_year": {
+                    "type": "integer"
+                  },
+                  "call_no": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "doc_type": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "title": "Test Book Updated",
+                  "author": "Test Author",
+                  "publisher": "Test Publisher",
+                  "publication_year": 2024,
+                  "call_no": "TP312/TEST",
+                  "language": "English",
+                  "doc_type": "Computer Science"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Books"],
+        "summary": "删除书籍",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/books/{id}/related": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取相关书籍",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "相关书籍列表"
+          }
+        }
+      }
+    },
+    "/api/books/all": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "获取所有书籍",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "书籍列表"
+          }
+        }
+      }
+    },
+    "/api/books/batch": {
+      "post": {
+        "tags": ["Books"],
+        "summary": "批量删除书籍",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "ids": ["BOOK_001", "BOOK_002"]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "批量删除成功"
+          }
+        }
+      }
+    },
+    "/api/borrows": {
+      "get": {
+        "tags": ["Borrows"],
+        "summary": "获取借阅记录列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "借阅记录列表"
+          }
+        }
+      }
+    },
+    "/api/borrows/{id}": {
+      "get": {
+        "tags": ["Borrows"],
+        "summary": "获取借阅详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "借阅详情"
+          }
+        }
+      }
+    },
+    "/api/recommendations": {
+      "get": {
+        "tags": ["Recommendations"],
+        "summary": "获取智能推荐",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "推荐结果"
+          }
+        }
+      }
+    },
+    "/api/recommendations/history": {
+      "get": {
+        "tags": ["Recommendations"],
+        "summary": "获取推荐历史记录",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "历史记录"
+          }
+        }
+      }
+    },
+    "/api/recommendations/history/{id}": {
+      "put": {
+        "tags": ["Recommendations"],
+        "summary": "更新推荐记录状态",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_rejected": {
+                    "type": "boolean"
+                  }
+                },
+                "example": {
+                  "is_rejected": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      }
+    },
+    "/api/recommendations/health": {
+      "get": {
+        "tags": ["Recommendations"],
+        "summary": "检查 AI 服务健康状态",
+        "responses": {
+          "200": {
+            "description": "服务正常"
+          }
+        }
+      }
+    }
+  }
+}
