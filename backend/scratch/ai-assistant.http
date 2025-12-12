@@ -1,0 +1,109 @@
+@baseUrl = http://localhost:3000/api/ai-assistant
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 用户登录
+### 获取 Session Cookie
+# @name login
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "ROOT",
+    "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+}
+
+### 会话管理
+### 获取可用模型列表
+GET {{baseUrl}}/models
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 创建新的聊天会话
+### 使用默认模型
+# @name createSession
+POST {{baseUrl}}/sessions
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "title": "AI Service Test Session"
+}
+
+### 获取会话列表
+GET {{baseUrl}}/sessions?page=1&limit=10
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 更新会话标题
+@sessionId = {{createSession.response.body.session.session_id}}
+PATCH {{baseUrl}}/sessions/{{sessionId}}
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "title": "AI Service Test Session (Updated)"
+}
+
+### 消息处理
+### 发送消息
+# @name sendMessage
+POST {{baseUrl}}/sessions/{{sessionId}}/messages
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "content": "你好。",
+    "stream": false
+}
+
+### 获取消息历史
+GET {{baseUrl}}/sessions/{{sessionId}}/messages?page=1&limit=20
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 保存系统消息
+POST {{baseUrl}}/sessions/{{sessionId}}/system-messages
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "role": "system",
+    "content": "你是一个智能助手。",
+    "metadata": {
+        "intent": "role_setting"
+    }
+}
+
+### 发送消息
+POST {{baseUrl}}/sessions/{{sessionId}}/messages
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "content": "你好",
+    "stream": true
+}
+
+### GET 方式流式请求
+GET {{baseUrl}}/sessions/{{sessionId}}/messages/stream?message=你好
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 反馈与统计
+### 提交消息反馈
+@messageId = {{sendMessage.response.body.ai_response.message_id}}
+POST {{baseUrl}}/messages/{{messageId}}/feedback
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "feedback_type": "like",
+    "feedback_reason": "helpful",
+    "feedback_comment": "回答准确"
+}
+
+### 获取用户使用统计
+GET {{baseUrl}}/stats
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 清理操作
+### 删除会话
+DELETE {{baseUrl}}/sessions/{{sessionId}}
+Cookie: {{login.response.headers.Set-Cookie}}

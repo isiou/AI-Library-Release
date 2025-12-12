@@ -60,7 +60,7 @@ const Login = () => {
         >
           <Input
             prefix={<UserOutlined />}
-            placeholder="学号"
+            placeholder="账号"
             autoComplete="username"
           />
         </Form.Item>

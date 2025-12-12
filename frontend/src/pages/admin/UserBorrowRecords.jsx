@@ -270,7 +270,7 @@ const UserBorrowRecords = () => {
                 <Descriptions.Item label="姓名">
                   {userInfo.name}
                 </Descriptions.Item>
-                <Descriptions.Item label="学号">
+                <Descriptions.Item label="账号">
                   {userInfo.student_id}
                 </Descriptions.Item>
                 <Descriptions.Item label="院系">

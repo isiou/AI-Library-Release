@@ -1,0 +1,42 @@
+@baseUrl = http://localhost:3000/api/recommendations
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 用户登录
+# @name login
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "ROOT",
+    "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+}
+
+### 获取智能推荐
+### 默认
+GET {{baseUrl}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 获取智能推荐
+### 指定查询和模型
+GET {{baseUrl}}?query=computer science&model=ollama&limit=3
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 获取推荐历史记录
+# @name history
+GET {{baseUrl}}/history?page=1&limit=10
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 更新推荐记录状态
+### 标记为不感兴趣
+@recommendationId = {{history.response.body.recommendations[0].id}}
+PUT {{baseUrl}}/history/{{recommendationId}}
+Content-Type: {{contentType}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+{
+    "is_rejected": true
+}
+
+### 检查 AI 服务健康状态
+GET {{baseUrl}}/health

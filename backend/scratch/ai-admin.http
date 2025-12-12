@@ -1,0 +1,89 @@
+@baseUrl = http://localhost:3000/api/ai-admin
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 管理员登录
+# @name login
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "ROOT",
+    "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+}
+
+### 模型管理
+### 获取模型列表
+GET {{baseUrl}}/models
+Content-Type: {{contentType}}
+
+### 添加新模型
+# @name createModel
+POST {{baseUrl}}/models
+Content-Type: {{contentType}}
+
+{
+    "model_name": "deepseek-r1:1.5b",
+    "model_type": "ollama",
+    "endpoint_url": "http://localhost:11434",
+    "max_tokens": 4096,
+    "temperature": 0.7,
+    "model_config": {
+        "top_p": 0.9,
+        "repeat_penalty": 1.1
+    }
+}
+
+### 更新模型配置
+@modelId = 1
+PATCH {{baseUrl}}/models/{{modelId}}
+Content-Type: {{contentType}}
+
+{
+    "temperature": 0.8,
+    "is_active": true,
+    "max_tokens": 8192
+}
+
+### 测试模型响应
+POST {{baseUrl}}/models/{{modelId}}/test
+Content-Type: {{contentType}}
+
+{
+    "test_message": "你好"
+}
+
+### 删除模型配置
+DELETE {{baseUrl}}/models/{{modelId}}
+Content-Type: {{contentType}}
+
+### Ollama 服务管理
+### Ollama 服务健康检查
+GET {{baseUrl}}/ollama/health
+Content-Type: {{contentType}}
+
+### 获取 Ollama 服务端实际可用模型
+GET {{baseUrl}}/ollama/models
+Content-Type: {{contentType}}
+
+### 同步 Ollama 模型到数据库
+POST {{baseUrl}}/ollama/sync
+Content-Type: {{contentType}}
+
+### 拉取 Ollama 模型
+POST {{baseUrl}}/ollama/pull
+Content-Type: {{contentType}}
+
+{
+    "model_name": "qwen3:8B"
+}
+
+### 删除 Ollama 服务端模型
+@ollamaModelName = qwen3:8B
+DELETE {{baseUrl}}/ollama/models/{{ollamaModelName}}
+Content-Type: {{contentType}}
+
+### 统计分析
+# 模型使用统计
+GET {{baseUrl}}/stats?start_date=2024-01-01&end_date=2025-12-31
+Content-Type: {{contentType}}

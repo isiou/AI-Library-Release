@@ -1,0 +1,56 @@
+@baseUrl = http://localhost:3000/api/announcements
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 管理员登录
+### 获取 Cookie
+# @name adminLogin
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "ROOT",
+    "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+}
+
+### 获取活动公告
+### 公开
+GET {{baseUrl}}/active
+
+### 获取所有公告
+### 管理员
+GET {{baseUrl}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+### 创建公告
+### 管理员
+# @name createAnnouncement
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+{
+    "title": "维护结束",
+    "content": "维护已结束",
+    "type": "info",
+    "is_active": true
+}
+
+### 更新公告
+### 管理员
+@announcementId = {{createAnnouncement.response.body.id}}
+PUT {{baseUrl}}/{{announcementId}}
+Content-Type: {{contentType}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+{
+    "title": "系统维护通知 (已更新)",
+    "content": "系统将于本周日进行维护，预计耗时1小时。",
+    "type": "info",
+    "is_active": true
+}
+
+### 删除公告
+### 管理员
+DELETE {{baseUrl}}/{{announcementId}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}

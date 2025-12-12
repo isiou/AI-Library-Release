@@ -28,8 +28,15 @@ const buildFallbackQuery = (
   const queryParams = [];
   const conditions = [];
 
-  // 基于借阅历史构建过滤条件
-  if (userBorrowsRows.length > 0) {
+  // 关键词过滤优先
+  if (query) {
+    queryParams.push(`%${query}%`);
+    const idx = queryParams.length;
+    conditions.push(
+      `(b.title ILIKE $${idx} OR b.author ILIKE $${idx} OR b.doc_type ILIKE $${idx})`,
+    );
+  } else if (userBorrowsRows.length > 0) {
+    // 仅在没有关键词时基于借阅历史构建过滤条件
     const docTypes = [
       ...new Set(userBorrowsRows.map((r) => r.doc_type).filter(Boolean)),
     ];
@@ -44,23 +51,9 @@ const buildFallbackQuery = (
       historyConditions.push(`b.doc_type = ANY($${queryParams.length})`);
     }
 
-    if (authors.length > 0) {
-      queryParams.push(authors);
-      historyConditions.push(`b.author = ANY($${queryParams.length})`);
-    }
-
     if (historyConditions.length > 0) {
       conditions.push(`(${historyConditions.join(" OR ")})`);
     }
-  }
-
-  // 关键词过滤
-  if (query) {
-    queryParams.push(`%${query}%`);
-    const idx = queryParams.length;
-    conditions.push(
-      `(b.title ILIKE $${idx} OR b.author ILIKE $${idx} OR b.doc_type ILIKE $${idx})`,
-    );
   }
 
   if (conditions.length > 0) {

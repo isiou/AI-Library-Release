@@ -164,8 +164,8 @@ class RecommendationService {
       for (const rec of recommendations) {
         const query = `
         INSERT INTO recommendation_history
-        (reader_id, model_used, recommended_book_title, recommended_book_author, recommendation_reason)
-        VALUES ($1, $2, $3, $4, $5)
+        (reader_id, model_used, recommended_book_title, recommended_book_author, recommendation_reason, call_number)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING recommendation_id
         `;
         const result = await db.query(query, [
@@ -174,6 +174,7 @@ class RecommendationService {
           rec.title || "",
           rec.author || "",
           rec.reason || "",
+          rec.call_number || "",
         ]);
         savedRecommendations.push({
           ...rec,

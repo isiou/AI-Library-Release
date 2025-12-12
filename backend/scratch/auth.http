@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 用户注册
+# @name register
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+    "readerId": "auth_test",
+    "password": "password123",
+    "nickname": "Test User Auth",
+    "gender": "M",
+    "enrollYear": 2023,
+    "readerType": "管理员",
+    "department": "IT"
+}
+
+### 用户登录
+# @name login
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "auth_test",
+    "password": "password123"
+}
+
+### 检查会话状态
+### 登录后
+GET {{baseUrl}}/session
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 用户登出
+POST {{baseUrl}}/logout
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 检查会话状态
+### 登出后
+GET {{baseUrl}}/session
+Cookie: {{login.response.headers.Set-Cookie}}

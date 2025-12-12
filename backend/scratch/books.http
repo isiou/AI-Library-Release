@@ -1,0 +1,101 @@
+@baseUrl = http://localhost:3000/api/books
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+@testBookId = TEST_BOOK_HTTP_001
+
+### 管理员登录
+# @name adminLogin
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "ROOT",
+    "password": "c84dc3a810bd03a8329564948357b2fb3800859eeec7a67f8668990220936094"
+}
+
+### 普通用户登录
+# @name userLogin
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "auth_test",
+    "password": "password123"
+}
+
+### 搜索书籍
+GET {{baseUrl}}/search?search=Python&limit=5
+
+### 获取热门书籍
+GET {{baseUrl}}/popular/list?limit=5
+
+### 获取分类统计
+GET {{baseUrl}}/categories/stats
+
+### 获取所有分类
+GET {{baseUrl}}/categories
+
+### 获取所有语言
+GET {{baseUrl}}/languages
+
+### 获取作者列表
+GET {{baseUrl}}/authors
+
+### 创建书籍
+### 管理员
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+{
+    "book_id": "{{testBookId}}",
+    "title": "HTTP Client Test Book",
+    "author": "Test Author",
+    "publisher": "Test Publisher",
+    "publication_year": 2023,
+    "call_no": "TP312/TEST",
+    "language": "English",
+    "doc_type": "Computer Science"
+}
+
+### 获取书籍详情
+GET {{baseUrl}}/{{testBookId}}
+
+### 获取相关书籍
+GET {{baseUrl}}/{{testBookId}}/related
+
+### 更新书籍
+### 管理员
+PUT {{baseUrl}}/{{testBookId}}
+Content-Type: {{contentType}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+{
+    "title": "HTTP Client Test Book (Updated)",
+    "author": "Test Author Updated",
+    "publisher": "Test Publisher",
+    "publication_year": 2024,
+    "call_no": "TP312/TEST",
+    "language": "English",
+    "doc_type": "Computer Science"
+}
+
+### 获取所有书籍
+### 管理员
+GET {{baseUrl}}/all?page=1&limit=10
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+### 删除书籍
+### 管理员
+DELETE {{baseUrl}}/{{testBookId}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+### 批量删除书籍
+### 管理员
+POST {{baseUrl}}/batch
+Content-Type: {{contentType}}
+Cookie: {{adminLogin.response.headers.Set-Cookie}}
+
+{
+    "ids": ["TEST_BOOK_HTTP_002", "TEST_BOOK_HTTP_003"]
+}

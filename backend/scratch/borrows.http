@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:3000/api/borrows
+@authUrl = http://localhost:3000/api/auth
+@contentType = application/json
+
+### 用户登录
+# @name login
+POST {{authUrl}}/login
+Content-Type: {{contentType}}
+
+{
+    "readerId": "PCSCS19153",
+    "password": "1bbe41924398db80f05892ed8dbb48660d15f937cd42abe0f4230fcfd0e38313"
+}
+
+### 获取借阅记录列表
+### 默认
+GET {{baseUrl}}
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 获取借阅记录列表
+### 带筛选
+GET {{baseUrl}}?page=1&limit=5&status=returned
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 获取借阅详情
+@borrowId = BR00000361
+GET {{baseUrl}}/{{borrowId}}
+Cookie: {{login.response.headers.Set-Cookie}}

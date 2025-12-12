@@ -61,12 +61,32 @@ router.get("/", requireAuth, async (req, res) => {
           query,
           limitNum,
         );
-        const fallbackResult = await db.query(sql, params);
+        let fallbackResult = await db.query(sql, params);
+
+        // 兜底推荐
+        if (fallbackResult.rows.length === 0 && !query) {
+          const { sql: fallbackSql, params: fallbackParams } =
+            buildFallbackQuery([], "", limitNum);
+          fallbackResult = await db.query(fallbackSql, fallbackParams);
+        }
 
         recommendations = fallbackResult.rows.map((book) => ({
           ...normalizeRecommendation(book),
           category: book.doc_type,
         }));
+
+        // 保存回退推荐历史
+        if (recommendations.length > 0) {
+          try {
+            await recommendationService.saveRecommendationHistory(
+              userId,
+              "database_fallback",
+              recommendations,
+            );
+          } catch (saveError) {
+            console.error("保存回退推荐历史失败\n", saveError);
+          }
+        }
 
         message = "回退数据库获取推荐成功";
       } catch (dbError) {
@@ -118,6 +138,7 @@ router.get("/history", requireAuth, async (req, res) => {
         recommended_book_title as title,
         recommended_book_author as author,
         recommendation_reason as reason,
+        call_number,
         model_used,
         created_at,
         is_rejected
@@ -133,7 +154,7 @@ router.get("/history", requireAuth, async (req, res) => {
       id: row.recommendation_id,
       title: row.title || "",
       author: row.author || "",
-      call_number: "",
+      call_number: row.call_number || "",
       reason: row.reason || "",
       model_used: row.model_used,
       created_at: row.created_at,
